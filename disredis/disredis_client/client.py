@@ -121,14 +121,6 @@ class DisredisClient(object):
                 self.sentinel = self.redis_client_class(
                     host=host,
                     port=int(port),
-                    db=self.db,
-                    password=self.password,
-                    socket_timeout=self.socket_timeout,
-                    connection_pool=self.connection_pool,
-                    charset=self.charset,
-                    errors=self.errors,
-                    decode_responses=self.decode_responses,
-                    unix_socket_path=self.unix_socket_path,
                 )
                 self.sentinel_addresses.append(address)
                 break
