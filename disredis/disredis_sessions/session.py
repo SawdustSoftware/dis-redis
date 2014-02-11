@@ -11,9 +11,16 @@ from disredis.disredis_sessions import settings
 
 
 # Avoid new redis connection on each request
-
 if settings.SESSION_REDIS_SENTINEL_URLS is not None:
-    redis_server = DisredisClient(settings.SESSION_REDIS_SENTINEL_URLS)
+    redis_server = DisredisClient(
+        host=settings.SESSION_REDIS_HOST,
+        port=settings.SESSION_REDIS_PORT,
+        db=settings.SESSION_REDIS_DB,
+        password=settings.SESSION_REDIS_PASSWORD,
+        socket_timeout=settings.SESSION_REDIS_TIMEOUT,
+        unix_socket_path=settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH,
+        sentinel_addresses=settings.SESSION_REDIS_SENTINEL_URLS,
+    )
 
 
 class SessionStore(SessionBase):

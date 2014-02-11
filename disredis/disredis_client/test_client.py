@@ -15,7 +15,7 @@ class MockStrictRedis(object):
     """
     fail = False
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, **kwargs):
         self.host = host
         self.port = port
         self.data = {}
@@ -55,7 +55,8 @@ class TestDisredisClient(TestCase):
         self.old_client = DisredisClient.redis_client_class
         DisredisClient.redis_client_class = MockStrictRedis
         Node.redis_client_class = MockStrictRedis
-        self.client = DisredisClient(["127.0.0.1:6383", "127.0.0.1:6384"])
+        self.client = DisredisClient(
+            sentinel_addresses=["127.0.0.1:6383", "127.0.0.1:6384"])
 
     def tearDown(self):
         DisredisClient.redis_client_class = self.old_client
@@ -86,10 +87,10 @@ class TestDisredisClient(TestCase):
         """
         If a connection gives a ConnectionError, switch to the backup.
         """
-        failed = self.client.nodes[1] 
+        failed = self.client.nodes[1]
         failed.connection.fail = True
         self.client.sentinel.masters[1] = ["name", "node2", "ip", "1.2.3.4",
-            "port", "11"]        
+            "port", "11"]
         self.client.set("test", "foo")
         self.assertNotEqual(failed, self.client.nodes[1])
         self.assertEqual(self.client.get("test"), "foo")
@@ -167,7 +168,7 @@ class TestDisredisClient(TestCase):
             self.assertRaises(ConnectionError, self.client.get_master,
                 self.client.nodes[0])
         finally:
-            MockStrictRedis.fail = False            
+            MockStrictRedis.fail = False
 
     def test_get_node_for_key(self):
         """
