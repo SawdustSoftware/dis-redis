@@ -168,7 +168,7 @@ class DisredisClient(object):
                 Node(
                     name=info["name"],
                     host=info["ip"],
-                    port=info["port"],
+                    port=int(info["port"]),
                     db=self.db,
                     password=self.password,
                     socket_timeout=self.socket_timeout,
@@ -192,7 +192,7 @@ class DisredisClient(object):
         newNode = Node(
             name=node.name,
             host=host,
-            port=port,
+            port=int(port),
             db=self.db,
             password=self.password,
             socket_timeout=self.socket_timeout,
